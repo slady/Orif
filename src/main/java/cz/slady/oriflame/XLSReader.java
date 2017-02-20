@@ -71,11 +71,11 @@ public class XLSReader implements ItemSource {
 
     private void readRow(final Row row) {
         if(row != null) {
-            String code = this.readCellValue(row, 0);
+            String code = this.readCellValue(row, ROW_CODE);
             if(code != null && !code.isEmpty()) {
                 double priceBuy;
                 try {
-                    priceBuy = this.readCellNum(row, 5);
+                    priceBuy = this.readCellNum(row, ROW_PRICE_BUY);
                 } catch (Exception var10) {
                     var10.printStackTrace();
                     System.out.println();
@@ -84,13 +84,13 @@ public class XLSReader implements ItemSource {
 
                 String name;
                 try {
-                    String priceSell = this.readCellValue(row, 1);
+                    String priceSell = this.readCellValue(row, ROW_NAME);
                     name = priceSell;
                 } catch (final RuntimeException e) {
                     name = "???";
                 }
 
-                double priceSell1 = this.readCellNum(row, 6);
+                double priceSell1 = this.readCellNum(row, ROW_PRICE_SELL);
                 Item item = new Item(code, name, priceBuy, priceSell1, this.fileName);
                 this.items.put(code, item);
                 this.itemList.add(item);
