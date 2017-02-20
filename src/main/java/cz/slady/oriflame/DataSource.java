@@ -16,25 +16,27 @@ public class DataSource {
     final List<ItemSource> readers = new ArrayList();
 
     public DataSource() throws InvalidFormatException, IOException {
-        this.prepareTxtDir();
-        File[] var4;
-        int var3 = (var4 = (new File("xls")).listFiles()).length;
+        prepareTxtDir();
 
-        for(int var2 = 0; var2 < var3; ++var2) {
-            File file = var4[var2];
-            String xmlName = file.getName();
-            int length = xmlName.length();
-            if(length < 4 || !xmlName.toLowerCase().endsWith(".xls")) {
+        final File[] files = (new File("xls")).listFiles();
+        final int len = files.length;
+
+        for (int i = 0; i < len; ++i) {
+            final File file = files[i];
+            final String xmlName = file.getName();
+            final int length = xmlName.length();
+            if (length < 4 || !xmlName.toLowerCase().endsWith(".xls")) {
                 throw new IllegalStateException("unexpected file name: " + xmlName);
             }
 
-            String txtName = "txt/" + xmlName.substring(0, length - 4) + ".txt";
-            File txtFile = new File(txtName);
-            if(txtFile.exists()) {
-                this.readers.add(new TXTReader(txtFile));
+            final String txtName = "txt/" + xmlName.substring(0, length - 4) + ".txt";
+            final File txtFile = new File(txtName);
+
+            if (txtFile.exists()) {
+                readers.add(new TXTReader(txtFile));
             } else {
-                XLSReader xlsReader = new XLSReader(file);
-                this.readers.add(xlsReader);
+                final XLSReader xlsReader = new XLSReader(file);
+                readers.add(xlsReader);
                 new TXTWriter(txtName, xlsReader.getItemList());
             }
         }
@@ -42,28 +44,29 @@ public class DataSource {
     }
 
     private void prepareTxtDir() {
-        File f = new File("txt");
-        if(!f.exists()) {
+        final File f = new File("txt");
+        if (!f.exists()) {
             f.mkdir();
         }
 
-        if(!f.isDirectory()) {
-            throw new IllegalStateException("directory \'txt\' not ready");
+        if (!f.isDirectory()) {
+            throw new IllegalStateException("directory 'txt' not ready");
         }
     }
 
-    public List<Item> getItemsById(String code) {
-        ArrayList items = new ArrayList();
-        Iterator var4 = this.readers.iterator();
+    public List<Item> getItemsById(final String code) {
+        final ArrayList items = new ArrayList();
 
-        while(var4.hasNext()) {
-            ItemSource reader = (ItemSource)var4.next();
-            Item item = reader.getItemById(code);
+        for (final ItemSource reader : readers) {
+            final Item item = reader.getItemById(code);
+
             if(item != null) {
                 items.add(item);
             }
+
         }
 
         return items;
     }
+
 }
