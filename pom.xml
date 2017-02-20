@@ -8,5 +8,12 @@
     <artifactId>oriflame</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>LATEST</version>
+        </dependency>
+    </dependencies>
 
 </project>
