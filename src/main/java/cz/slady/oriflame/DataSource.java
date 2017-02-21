@@ -1,14 +1,8 @@
 package cz.slady.oriflame;
 
-import cz.slady.oriflame.Item;
-import cz.slady.oriflame.ItemSource;
-import cz.slady.oriflame.TXTReader;
-import cz.slady.oriflame.TXTWriter;
-import cz.slady.oriflame.XLSReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 

@@ -16,31 +16,32 @@ public class Item {
     }
 
     public String getCode() {
-        return this.code;
+        return code;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public double getPriceBuy() {
-        return this.priceBuy;
+        return priceBuy;
     }
 
     public double getPriceSell() {
-        return this.priceSell;
+        return priceSell;
     }
 
     public String getFileName() {
-        return this.fileName;
+        return fileName;
     }
 
     public String toString() {
-        return this.getFileName() + "\t" + this.getCode() + "\t" + this.getName() + "\t" + this.numConv(this.priceBuy) + "\t" + this.numConv(this.priceSell);
+        return getFileName() + "\t" + getCode() + "\t" + getName() + "\t" + numConv(priceBuy) + "\t" + numConv(priceSell);
     }
 
     private String numConv(final double num) {
         final String d = "" + num;
         return d.endsWith(".0") ? d.substring(0, d.length() - 2) : d.replace('.', ',');
     }
+
 }
