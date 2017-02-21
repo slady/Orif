@@ -1,7 +1,5 @@
 package cz.slady.oriflame;
 
-import cz.slady.oriflame.Item;
-import cz.slady.oriflame.ItemSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,34 +16,43 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 public class XLSReader implements ItemSource {
+
     private static final int ROW_CODE = 0;
+
     private static final int ROW_NAME = 1;
+
     private static final int ROW_PRICE_BUY = 5;
+
     private static final int ROW_PRICE_SELL = 6;
+
     final DataFormatter formatter = new DataFormatter(true);
+
     final FormulaEvaluator evaluator;
+
     final Map<String, Item> items = new HashMap();
+
     final List<Item> itemList = new ArrayList();
+
     final String fileName;
 
-    public XLSReader(File file) throws InvalidFormatException, IOException {
+    public XLSReader(final File file) throws InvalidFormatException, IOException {
         this.fileName = file.getName();
         final FileInputStream fis = new FileInputStream(file);
         final Workbook workbook = WorkbookFactory.create(fis);
         this.evaluator = workbook.getCreationHelper().createFormulaEvaluator();
-        this.readSheet(workbook, 0);
-        this.readSheet(workbook, "Speciální akce");
-        this.readSheet(workbook, "speciální akce");
-        this.readSheet(workbook, "Mimořádná nabídka");
+        readSheet(workbook, 0);
+        readSheet(workbook, "Speciální akce");
+        readSheet(workbook, "speciální akce");
+        readSheet(workbook, "Mimořádná nabídka");
         fis.close();
     }
 
     public Item getItemById(String code) {
-        return this.items.get(code);
+        return items.get(code);
     }
 
     public List<Item> getItemList() {
-        return this.itemList;
+        return itemList;
     }
 
     private void readSheet(final Workbook workbook, final int sheetNum) {
@@ -70,40 +77,45 @@ public class XLSReader implements ItemSource {
     }
 
     private void readRow(final Row row) {
-        if(row != null) {
-            String code = this.readCellValue(row, ROW_CODE);
-            if(code != null && !code.isEmpty()) {
-                double priceBuy;
-                try {
-                    priceBuy = this.readCellNum(row, ROW_PRICE_BUY);
-                } catch (Exception var10) {
-                    var10.printStackTrace();
-                    System.out.println();
-                    return;
-                }
-
-                String name;
-                try {
-                    String priceSell = this.readCellValue(row, ROW_NAME);
-                    name = priceSell;
-                } catch (final RuntimeException e) {
-                    name = "???";
-                }
-
-                double priceSell1 = this.readCellNum(row, ROW_PRICE_SELL);
-                Item item = new Item(code, name, priceBuy, priceSell1, this.fileName);
-                this.items.put(code, item);
-                this.itemList.add(item);
-            }
+        if (row == null) {
+            return;
         }
+
+        final String code = readCellValue(row, ROW_CODE);
+        if (code == null || code.isEmpty()) {
+            return;
+        }
+
+        final double priceBuy;
+
+        try {
+            priceBuy = readCellNum(row, ROW_PRICE_BUY);
+        } catch (final Exception ex) {
+            ex.printStackTrace();
+            System.out.println();
+            return;
+        }
+
+        String name;
+        try {
+            name = readCellValue(row, ROW_NAME);
+        } catch (final RuntimeException e) {
+            name = "???";
+        }
+
+        final double priceSell = readCellNum(row, ROW_PRICE_SELL);
+        final Item item = new Item(code, name, priceBuy, priceSell, fileName);
+        this.items.put(code, item);
+        this.itemList.add(item);
     }
 
-    private double readCellNum(Row row, int cellNum) {
-        String cellValue = this.readCellValue(row, cellNum);
-        return Double.valueOf(cellValue.replace(',', '.')).doubleValue();
+    private double readCellNum(final Row row, final int cellNum) {
+        final String cellValue = readCellValue(row, cellNum);
+        return Double.parseDouble(cellValue.replace(',', '.'));
     }
 
-    private String readCellValue(Row row, int cellNum) {
-        return this.formatter.formatCellValue(row.getCell(cellNum), this.evaluator);
+    private String readCellValue(final Row row, final int cellNum) {
+        return formatter.formatCellValue(row.getCell(cellNum), evaluator);
     }
+
 }
