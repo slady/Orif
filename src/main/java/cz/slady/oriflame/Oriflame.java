@@ -1,12 +1,5 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by Fernflower decompiler)
-//
-
 package cz.slady.oriflame;
 
-import cz.slady.oriflame.DataSource;
-import cz.slady.oriflame.Item;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -14,41 +7,47 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.Iterator;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+
 public class Oriflame implements ActionListener {
-    DataSource dataSource = new DataSource();
-    JTextArea textArea;
-    JTextField textField;
-    JButton button;
+
+    private DataSource dataSource = new DataSource();
+    private JTextArea textArea;
+    private JTextField textField;
+    private JButton button;
 
     public Oriflame() throws InvalidFormatException, IOException {
-        JFrame frame = new JFrame("Oriflame");
-        Container contentPane = frame.getContentPane();
+        final JFrame frame = new JFrame("Oriflame");
+        final Container contentPane = frame.getContentPane();
         contentPane.setLayout(new BorderLayout());
-        this.textArea = new JTextArea(15, 100);
-        JScrollPane scrollPane = new JScrollPane(this.textArea, 20, 30);
-        contentPane.add(scrollPane, "Center");
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(new JLabel("Oriflame kód:"), "West");
-        this.textField = new JTextField(10);
-        panel.add(this.textField, "Center");
-        this.button = new JButton("Hledej");
-        panel.add(this.button, "East");
-        contentPane.add(panel, "North");
+
+        textArea = new JTextArea(15, 100);
+        final JScrollPane scrollPane = new JScrollPane(textArea, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        contentPane.add(scrollPane, BorderLayout.CENTER);
+
+        final JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JLabel("Oriflame kód:"), BorderLayout.WEST);
+
+        textField = new JTextField(10);
+        panel.add(textField, BorderLayout.CENTER);
+
+        button = new JButton("Hledej");
+        panel.add(button, BorderLayout.EAST);
+
+        contentPane.add(panel, BorderLayout.NORTH);
+
         frame.setVisible(true);
         frame.pack();
-        frame.setDefaultCloseOperation(3);
-        this.button.addActionListener(this);
-        this.textField.addActionListener(this);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        button.addActionListener(this);
+        textField.addActionListener(this);
+
         frame.addWindowListener(new WindowAdapter() {
             public void windowOpened(WindowEvent e) {
                 Oriflame.this.textField.requestFocus();
@@ -56,21 +55,20 @@ public class Oriflame implements ActionListener {
         });
     }
 
-    public void actionPerformed(ActionEvent actionEvent) {
-        String code = this.textField.getText();
-        StringBuilder text = new StringBuilder();
-        Iterator var5 = this.dataSource.getItemsById(code).iterator();
+    public void actionPerformed(final ActionEvent actionEvent) {
+        final String code = textField.getText();
+        final StringBuilder text = new StringBuilder();
 
-        while(var5.hasNext()) {
-            Item item = (Item)var5.next();
+        for (final Item item : dataSource.getItemsById(code)) {
             text.append(item.toString());
             text.append('\n');
         }
 
-        this.textArea.setText(text.toString());
+        textArea.setText(text.toString());
     }
 
     public static void main(String[] args) throws InvalidFormatException, IOException {
         new Oriflame();
     }
+
 }
