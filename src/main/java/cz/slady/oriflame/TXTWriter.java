@@ -23,7 +23,7 @@ public class TXTWriter {
 
     private void writeItem(final Item item) throws IOException {
         write(item.getCode());
-        write(item.getName());
+        write(item.getName().replace("\n", ""));
         write(item.getPriceBuy());
         write(item.getPriceSell());
     }

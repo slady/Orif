@@ -111,7 +111,7 @@ public class XLSReader implements ItemSource {
 
     private double readCellNum(final Row row, final int cellNum) {
         final String cellValue = readCellValue(row, cellNum);
-        return Double.parseDouble(cellValue.replace(',', '.'));
+        return Double.parseDouble(cellValue.replace(" ", "").replace(',', '.'));
     }
 
     private String readCellValue(final Row row, final int cellNum) {
