@@ -8,33 +8,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TXTReader implements ItemSource {
+
     final String fileName;
     final BufferedReader reader;
     final Map<String, Item> items = new HashMap();
 
     public TXTReader(final File file) throws IOException {
-        this.fileName = file.getName();
-        this.reader = new BufferedReader(new FileReader(file));
-        int lineCount = this.readLineInt();
+        fileName = file.getName();
+        reader = new BufferedReader(new FileReader(file));
 
-        for(int i = 0; i < lineCount; ++i) {
-            this.readItem();
+        int lineCount = readLineInt();
+
+        for (int i = 0; i < lineCount; ++i) {
+            readItem();
         }
 
         this.reader.close();
     }
 
     private void readItem() throws IOException {
-        final String code = this.reader.readLine();
-        final String name = this.reader.readLine();
-        double priceBuy = this.readLineDouble();
-        double priceSell = this.readLineDouble();
-        final Item item = new Item(code, name, priceBuy, priceSell, this.fileName);
-        this.items.put(code, item);
+        final String code = reader.readLine();
+        final String name = reader.readLine();
+        final double priceBuy = readLineDouble();
+        final double priceSell = readLineDouble();
+        final Item item = new Item(code, name, priceBuy, priceSell, fileName);
+        items.put(code, item);
     }
 
     private int readLineInt() throws IOException {
-        return Integer.parseInt(this.reader.readLine());
+        return Integer.parseInt(reader.readLine());
     }
 
     private double readLineDouble() throws NumberFormatException, IOException {
@@ -42,6 +44,7 @@ public class TXTReader implements ItemSource {
     }
 
     public Item getItemById(final String code) {
-        return this.items.get(code);
+        return items.get(code);
     }
+
 }
